@@ -3,77 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saúde na Mão-MZ | Chat</title>
+    <title>Saúde na Mão-MZ | Planos</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; }
-        
-        /* Cabeçalho */
-        .header { background: #075e54; color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 1.2rem; shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        
-        /* Área das Mensagens */
-        #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        
-        .message { max-width: 85%; padding: 12px 16px; border-radius: 15px; line-height: 1.5; font-size: 15px; position: relative; }
-        
-        /* Estilo da IA (Saúde na Mão-MZ) */
-        .bot { align-self: flex-start; background: white; color: #333; border-bottom-left-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        
-        /* Estilo do Utilizador */
-        .user { align-self: flex-end; background: #dcf8c6; color: #333; border-bottom-right-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        :root {
+            --primary: #075e54;
+            --secondary: #25d366;
+            --bg: linear-gradient(135deg, #e0f2f1 0%, #ffffff 100%);
+        }
 
-        /* Barra de Digitação */
-        .input-area { background: white; padding: 15px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #ddd; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            padding: 25px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(7, 94, 84, 0.1);
+            text-align: center;
+        }
+
+        .logo-box {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            border: 3px solid var(--secondary);
+            overflow: hidden;
+        }
+
+        .logo-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        h1 { color: var(--primary); font-size: 22px; margin-bottom: 5px; }
         
-        input { flex: 1; padding: 12px 15px; border: 1px solid #ddd; border-radius: 25px; outline: none; font-size: 16px; }
-        
-        button { background: #075e54; color: white; border: none; padding: 12px 20px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #128c7e; }
+        .planos-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .plano-card {
+            background: #f9f9f9;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            padding: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .plano-card.destaque {
+            border-color: var(--secondary);
+            background: #f0fdf4;
+        }
+
+        .plano-nome { font-size: 14px; font-weight: bold; color: #666; }
+        .plano-preco { font-size: 20px; font-weight: 900; color: var(--primary); margin: 5px 0; }
+
+        .contas-box {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 10px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .btn-whats {
+            display: block;
+            background: var(--secondary);
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .btn-entrar {
+            display: block;
+            background: #f0f0f0;
+            color: #333;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
 
-<div class="header">Saúde na Mão-MZ</div>
+<div class="container">
+    <div class="logo-box"><img src="logo.jpeg" alt="Logo"></div>
+    <h1>Escolha o seu Plano</h1>
+    <p style="font-size: 14px; color: #666;">Aceda à melhor triagem médica de Moçambique.</p>
 
-<div id="chat-container">
-    <div class="message bot">Olá! Eu sou o Saúde na Mão-MZ, o seu guia digital para o bem-estar em Moçambique. Estou aqui para tirar dúvidas sobre saúde, ajudar a entender sintomas ou dar dicas de prevenção.</div>
-</div>
+    <div class="planos-grid">
+        <div class="plano-card">
+            <div class="plano-nome">DIÁRIO</div>
+            <div class="plano-preco">20 MT</div>
+            <small>Acesso 24h</small>
+        </div>
+        <div class="plano-card destaque">
+            <div class="plano-nome">MENSAL</div>
+            <div class="plano-preco">200 MT</div>
+            <small>Uso Ilimitado</small>
+        </div>
+    </div>
 
-<div class="input-area">
-    <input type="text" id="user-input" placeholder="Escreva a sua dúvida aqui..." onkeypress="if(event.key === 'Enter') sendMessage()">
-    <button onclick="sendMessage()">Enviar</button>
+    <div class="contas-box">
+        <b>M-Pesa:</b> 847391127 <br>
+        <b>e-Mola:</b> 875591127
+    </div>
+
+    <a href="https://wa.me/258847391127?text=Olá! Fiz o pagamento e quero o meu código de acesso (Diário/Mensal)." class="btn-whats">
+        Enviar Comprovativo
+    </a>
+
+    <button onclick="verificar()" class="btn-entrar">Já tenho código? Entrar</button>
 </div>
 
 <script>
-    async function sendMessage() {
-        const input = document.getElementById('user-input');
-        const container = document.getElementById('chat-container');
-        const text = input.value.trim();
-        
-        if (!text) return;
-
-        // Adiciona a mensagem do utilizador ao ecrã
-        container.innerHTML += <div class="message user">${text}</div>;
-        input.value = '';
-        container.scrollTop = container.scrollHeight;
-
-        try {
-            // Liga ao seu Ollama local
-            const response = await fetch('http://localhost:11434/api/generate', {
-                method: 'POST',
-                body: JSON.stringify({
-                    model: 'saude-mz',
-                    prompt: text,
-                    stream: false
-                })
-            });
-
-            const data = await response.json();
-            
-            // Adiciona a resposta da IA ao ecrã
-            container.innerHTML += <div class="message bot">${data.response}</div>;
-            container.scrollTop = container.scrollHeight;
-        } catch (error) {
-            container.innerHTML += <div class="message bot">⚠️ Erro: Certifique-se de que o Ollama está ligado no terminal.</div>;
+    function verificar() {
+        var senhaCorreta = "Saude2026"; 
+        var entrada = prompt("Insira o seu código de acesso:");
+        if (entrada === senhaCorreta) {
+            window.location.href = "chat.html";
+        } else if (entrada !== null) {
+            alert("Código incorreto. Peça o seu código via WhatsApp.");
         }
     }
 </script>
