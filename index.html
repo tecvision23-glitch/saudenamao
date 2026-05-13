@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saúde na Mão-MZ | Ativação</title>
+    <style>
+        :root {
+            --primary: #075e54;
+            --secondary: #25d366;
+            --bg: linear-gradient(180deg, #e8f5e9 0%, #ffffff 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            border: 1px solid #d1e7dd;
+        }
+
+        .logo-box {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            border: 3px solid var(--secondary);
+            padding: 5px;
+        }
+
+        .logo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        h1 { color: var(--primary); font-size: 22px; margin-bottom: 10px; }
+        
+        .box-pagamento {
+            background: #f0fdf4;
+            border: 2px dashed var(--secondary);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .valor { font-size: 28px; font-weight: bold; color: #1b1b1b; }
+
+        .btn-whats {
+            display: block;
+            background: var(--secondary);
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
+        }
+
+        .btn-entrar {
+            display: block;
+            background: #f8f9fa;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="logo-box">
+        <img src="logo.jpeg" alt="Logo">
+    </div>
+
+    <h1>Saúde na Mão-MZ</h1>
+    <p style="color: #666; font-size: 14px;">Ative o seu acesso para começar a consulta com a nossa IA.</p>
+
+    <div class="box-pagamento">
+        <div class="valor">50 MT</div>
+        <p style="margin: 5px 0; font-size: 13px;"><b>M-Pesa:</b> 847391127<br><b>e-Mola:</b> 875591127</p>
+    </div>
+
+    <a href="https://wa.me/258847391127?text=Olá! Quero ativar o meu acesso ao Saúde na Mão." class="btn-whats">
+        Pagar via WhatsApp
+    </a>
+
+    <div onclick="verificar()" class="btn-entrar">
+        Já tenho código? Entrar no Chat
+    </div>
+</div>
+
+<script>
+    function verificar() {
+        var senha = prompt("🔒 SEGURANÇA: Digite o código de acesso:");
+        if (senha === "Saude2026") {
+            window.location.href = "chat.html";
+        } else if (senha !== null) {
+            alert("Código incorreto! Pague via M-Pesa para receber o seu código.");
+        }
+    }
+</script>
+
+</body>
+</html>
