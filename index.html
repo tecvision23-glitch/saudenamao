@@ -4,148 +4,507 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saúde na Mão-MZ | Planos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #075e54;
+            --primary-dark: #054c44;
             --secondary: #25d366;
-            --bg: linear-gradient(135deg, #e0f2f1 0%, #ffffff 100%);
+            --accent: #128c7e;
+            --bg-gradient: linear-gradient(135deg, #075e54 0%, #128c7e 50%, #25d366 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --shadow: 0 20px 40px rgba(7, 94, 84, 0.2);
+            --shadow-hover: 0 25px 50px rgba(7, 94, 84, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: var(--bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             margin: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Partículas de fundo */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(37,211,102,0.05) 0%, transparent 30%);
+            pointer-events: none;
+            z-index: 0;
         }
 
         .container {
-            background: white;
+            background: var(--card-bg);
             width: 100%;
-            max-width: 450px;
-            padding: 25px;
-            border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(7, 94, 84, 0.1);
+            max-width: 480px;
+            padding: 30px 25px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
             text-align: center;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .logo-box {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 15px;
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 20px;
             border-radius: 50%;
-            border: 3px solid var(--secondary);
-            overflow: hidden;
+            padding: 4px;
+            background: var(--bg-gradient);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
         }
 
-        .logo-box img { width: 100%; height: 100%; object-fit: cover; }
+        .logo-box img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            border-radius: 50%;
+            border: 3px solid white;
+        }
 
-        h1 { color: var(--primary); font-size: 22px; margin-bottom: 5px; }
+        h1 { 
+            color: var(--primary); 
+            font-size: 24px; 
+            margin-bottom: 8px; 
+            font-weight: 700;
+        }
         
+        .subtitle {
+            font-size: 14px; 
+            color: #666;
+            margin-bottom: 25px;
+            font-weight: 400;
+        }
+
+        /* Planos */
         .planos-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 20px 0;
+            gap: 12px;
+            margin: 20px 0 25px;
         }
 
         .plano-card {
-            background: #f9f9f9;
-            border: 2px solid #eee;
-            border-radius: 15px;
-            padding: 15px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 18px 12px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plano-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 25px rgba(18, 140, 126, 0.15);
         }
 
         .plano-card.destaque {
             border-color: var(--secondary);
-            background: #f0fdf4;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.2);
         }
 
-        .plano-nome { font-size: 14px; font-weight: bold; color: #666; }
-        .plano-preco { font-size: 20px; font-weight: 900; color: var(--primary); margin: 5px 0; }
+        .plano-card.destaque::before {
+            content: "MAIS POPULAR";
+            position: absolute;
+            top: 8px;
+            right: -30px;
+            background: var(--secondary);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 25px;
+            transform: rotate(45deg);
+            letter-spacing: 0.5px;
+        }
 
-        .contas-box {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            padding: 10px;
-            font-size: 13px;
-            margin-bottom: 20px;
+        .plano-nome { 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #64748b; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .plano-preco { 
+            font-size: 24px; 
+            font-weight: 800; 
+            color: var(--primary); 
+            margin: 8px 0;
+        }
+        
+        .plano-desc {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        /* Seção de Pagamento */
+        .payment-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 18px;
+            margin: 20px 0 25px;
             text-align: left;
         }
 
+        .payment-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+
+        .payment-title i {
+            color: var(--secondary);
+            font-size: 16px;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            transition: 0.2s;
+        }
+
+        .payment-method:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: white;
+        }
+
+        .mpesa { background: linear-gradient(135deg, #e60000, #ff1a1a); }
+        .emola { background: linear-gradient(135deg, #ff6600, #ff8533); }
+
+        .payment-details {
+            flex: 1;
+        }
+
+        .payment-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        .payment-number {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--primary);
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 5px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #e0f2f1;
+        }
+
+        .copy-btn.copied {
+            color: var(--secondary);
+        }
+
+        /* Botões */
         .btn-whats {
-            display: block;
-            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--secondary), #128c7e);
             color: white;
             text-decoration: none;
-            padding: 15px;
-            border-radius: 15px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            padding: 16px 20px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
+            border: none;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .btn-whats:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-whats i {
+            font-size: 18px;
         }
 
         .btn-entrar {
-            display: block;
-            background: #f0f0f0;
-            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: white;
+            color: var(--primary);
             text-decoration: none;
-            padding: 12px;
-            border-radius: 15px;
+            padding: 14px 20px;
+            border-radius: 16px;
             font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
-            border: none;
+            border: 2px solid var(--primary);
             width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .btn-entrar:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Footer */
+        .footer-note {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        /* Responsivo */
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 20px;
+                border-radius: 20px;
+            }
+            
+            .planos-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .plano-card.destaque::before {
+                font-size: 9px;
+                padding: 2px 20px;
+                right: -25px;
+                top: 10px;
+            }
+        }
+
+        /* Animação de pulse para o plano destacado */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
+        .plano-card.destaque {
+            animation: pulse 2s infinite;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="logo-box"><img src="logo.jpeg" alt="Logo"></div>
+    <div class="logo-box">
+        <img src="logo.jpeg" alt="Logo Saúde na Mão-MZ" onerror="this.src='https://via.placeholder.com/90x90/075e54/ffffff?text=SM'">
+    </div>
+    
     <h1>Escolha o seu Plano</h1>
-    <p style="font-size: 14px; color: #666;">Aceda à melhor triagem médica de Moçambique.</p>
+    <p class="subtitle">Aceda à melhor triagem médica digital de Moçambique 🇲🇿</p>
 
+    <!-- Planos -->
     <div class="planos-grid">
-        <div class="plano-card">
-            <div class="plano-nome">DIÁRIO</div>
+        <div class="plano-card" onclick="selecionarPlano('Diário')">
+            <div class="plano-nome"><i class="fas fa-sun"></i> Diário</div>
             <div class="plano-preco">20 MT</div>
-            <small>Acesso 24h</small>
+            <div class="plano-desc">Acesso por 24 horas</div>
         </div>
-        <div class="plano-card destaque">
-            <div class="plano-nome">MENSAL</div>
+        <div class="plano-card destaque" onclick="selecionarPlano('Mensal')">
+            <div class="plano-nome"><i class="fas fa-calendar-check"></i> Mensal</div>
             <div class="plano-preco">200 MT</div>
-            <small>Uso Ilimitado</small>
+            <div class="plano-desc">Acesso ilimitado • Melhor valor</div>
         </div>
     </div>
 
-    <div class="contas-box">
-        <b>M-Pesa:</b> 847391127 <br>
-        <b>e-Mola:</b> 875591127
+    <!-- Seção de Pagamento Melhorada -->
+    <div class="payment-section">
+        <div class="payment-title">
+            <i class="fas fa-credit-card"></i>
+            <span>Como pagar</span>
+        </div>
+        
+        <div class="payment-method">
+            <div class="payment-icon mpesa">M</div>
+            <div class="payment-details">
+                <div class="payment-name">M-Pesa</div>
+                <div class="payment-number" id="mpesa-num">847391127</div>
+            </div>
+            <button class="copy-btn" onclick="copiarNumero('mpesa-num', this)">
+                <i class="fas fa-copy"></i>
+            </button>
+        </div>
+        
+        <div class="payment-method">
+            <div class="payment-icon emola">E</div>
+            <div class="payment-details">
+                <div class="payment-name">e-Mola</div>
+                <div class="payment-number" id="emola-num">875591127</div>
+            </div>
+            <button class="copy-btn" onclick="copiarNumero('emola-num', this)">
+                <i class="fas fa-copy"></i>
+            </button>
+        </div>
+        
+        <p style="font-size: 12px; color: #64748b; margin-top: 12px; text-align: center;">
+            <i class="fas fa-info-circle"></i> Após o pagamento, envie o comprovativo pelo WhatsApp
+        </p>
     </div>
 
-    <a href="https://wa.me/258847391127?text=Olá! Fiz o pagamento e quero o meu código de acesso (Diário/Mensal)." class="btn-whats">
+    <!-- Botões de Ação -->
+    <a href="https://wa.me/258847391127?text=Olá!%20Fiz%20o%20pagamento%20e%20quero%20o%20meu%20código%20de%20acesso%20(Plano%20selecionado)." 
+       class="btn-whats" 
+       id="btn-whats-link">
+        <i class="fab fa-whatsapp"></i>
         Enviar Comprovativo
     </a>
 
-    <button onclick="verificar()" class="btn-entrar">Já tenho código? Entrar</button>
+    <button onclick="verificar()" class="btn-entrar">
+        <i class="fas fa-key"></i>
+        Já tenho código? Entrar
+    </button>
+
+    <div class="footer-note">
+        🔒 Pagamento seguro • Suporte 24/7 • Dados protegidos
+    </div>
 </div>
 
 <script>
+    // Função para selecionar plano e atualizar link do WhatsApp
+    let planoSelecionado = 'Mensal'; // Padrão
+    
+    function selecionarPlano(plano) {
+        planoSelecionado = plano;
+        const link = document.getElementById('btn-whats-link');
+        const texto = Olá! Fiz o pagamento e quero o meu código de acesso (Plano ${plano}).;
+        link.href = https://wa.me/258847391127?text=${encodeURIComponent(texto)};
+        
+        // Efeito visual de seleção
+        document.querySelectorAll('.plano-card').forEach(card => {
+            card.style.borderColor = '#e2e8f0';
+        });
+        event.currentTarget.style.borderColor = 'var(--secondary)';
+    }
+
+    // Função para copiar número
+    function copiarNumero(elementId, btn) {
+        const numero = document.getElementById(elementId).textContent;
+        navigator.clipboard.writeText(numero).then(() => {
+            // Feedback visual
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i>';
+            btn.classList.add('copied');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalIcon;
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+
+    // Função de verificação de código
     function verificar() {
-        var senhaCorreta = "Saude2026"; 
-        var entrada = prompt("Insira o seu código de acesso:");
+        const senhaCorreta = "Saude2026"; 
+        const entrada = prompt("🔐 Insira o seu código de acesso:");
+        
         if (entrada === senhaCorreta) {
-            window.location.href = "chat.html";
+            // Animação de sucesso antes de redirecionar
+            document.querySelector('.container').style.animation = 'none';
+            document.querySelector('.container').offsetHeight; // Trigger reflow
+            document.querySelector('.container').style.animation = 'slideUp 0.3s ease-out';
+            
+            setTimeout(() => {
+                window.location.href = "chat.html";
+            }, 300);
         } else if (entrada !== null) {
-            alert("Código incorreto. Peça o seu código via WhatsApp.");
+            alert("❌ Código incorreto.\n\n💡 Dica: Peça o seu código via WhatsApp após o pagamento.");
         }
     }
+
+    // Inicializar com plano mensal selecionado
+    document.addEventListener('DOMContentLoaded', () => {
+        selecionarPlano('Mensal');
+    });
 </script>
 
 </body>
