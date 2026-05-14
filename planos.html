@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saúde na Mão-MZ | Planos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #075e54;
+            --primary-dark: #054c44;
+            --secondary: #25d366;
+            --accent: #128c7e;
+            --bg-gradient: linear-gradient(135deg, #075e54 0%, #128c7e 50%, #25d366 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --shadow: 0 20px 40px rgba(7, 94, 84, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 480px;
+            padding: 30px 25px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logo-box {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 { color: var(--primary); font-size: 22px; margin-bottom: 5px; }
+        .subtitle { font-size: 14px; color: #666; margin-bottom: 20px; }
+
+        .planos-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .plano-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .plano-card.active {
+            border-color: var(--secondary);
+            background: #f0fdf4;
+        }
+
+        .plano-preco { font-size: 20px; font-weight: 800; color: var(--primary); }
+
+        .payment-section {
+            background: #f1f5f9;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .payment-icon { width: 35px; height: 35px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        .mpesa { background: #e60000; }
+        .emola { background: #ff6600; }
+
+        .btn-whats {
+            display: block;
+            background: var(--secondary);
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .btn-entrar {
+            width: 100%;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo-box">
+    <img src="logo.jpeg" alt="Logo Saúde na Mão-MZ" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+</div>
+    <h1>Escolha o seu Plano</h1>
+    <p class="subtitle">Aceda à melhor triagem médica digital de Moçambique 🇲🇿</p>
+
+    <div class="planos-grid">
+        <div class="plano-card" id="card-diario" onclick="selecionarPlano('Diário', 20)">
+            <strong>Diário</strong>
+            <div class="plano-preco">20 MT</div>
+            <small>24 horas</small>
+        </div>
+        <div class="plano-card active" id="card-mensal" onclick="selecionarPlano('Mensal', 200)">
+            <strong>Mensal</strong>
+            <div class="plano-preco">200 MT</div>
+            <small>Ilimitado</small>
+        </div>
+    </div>
+
+    <div class="payment-section">
+        <strong><i class="fas fa-credit-card"></i> Pagamento via Móvel:</strong>
+        <div class="payment-method">
+            <div class="payment-icon mpesa">M</div>
+            <div><small>M-Pesa</small><br><strong>847391127</strong></div>
+        </div>
+        <div class="payment-method">
+            <div class="payment-icon emola">E</div>
+            <div><small>e-Mola</small><br><strong>875591127</strong></div>
+        </div>
+    </div>
+
+    <a href="#" class="btn-whats" id="wa-link">
+        <i class="fab fa-whatsapp"></i> Enviar Comprovativo
+    </a>
+
+    <button onclick="verificar()" class="btn-entrar">Já tenho código? Entrar</button>
+</div>
+
+<script>
+    let planoAtual = "Mensal";
+
+    function selecionarPlano(nome, preco) {
+        planoAtual = nome;
+        document.querySelectorAll('.plano-card').forEach(c => c.classList.remove('active'));
+        if(nome === 'Diário') document.getElementById('card-diario').classList.add('active');
+        else document.getElementById('card-mensal').classList.add('active');
+        
+        const msg = encodeURIComponent(`Olá! Fiz o pagamento de ${preco} MT para o Plano ${nome}. Segue o comprovativo.`);
+        document.getElementById('wa-link').href = `https://wa.me/258847391127?text=${msg}`;
+    }
+
+    function verificar() {
+        const codigo = prompt("Insira o seu código de acesso:");
+        if (codigo === "Saude2026") {
+            window.location.href = "chat.html";
+        } else if (codigo !== null) {
+            alert("Código incorreto. Solicite o seu via WhatsApp.");
+        }
+    }
+
+    // Inicia o link do WhatsApp
+    selecionarPlano('Mensal', 200);
+</script>
+
+</body>
+</html>
