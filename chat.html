@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Saúde na Mão-MZ | Chat Direto</title>
+    <title>Saúde na Mão-MZ | Chat Seguro</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; background: #e5ddd5; height: 100vh; display: flex; flex-direction: column; }
         
-        /* Cabeçalho WhatsApp */
         header { 
             background: #075e54; color: white; padding: 10px 16px; 
             display: flex; align-items: center; gap: 12px;
@@ -19,7 +18,6 @@
         .header-info h2 { font-size: 16px; margin: 0; }
         .header-info span { font-size: 11px; opacity: 0.9; }
 
-        /* Área de Chat */
         #chat-window { 
             flex: 1; overflow-y: auto; padding: 15px; 
             display: flex; flex-direction: column; gap: 10px;
@@ -31,7 +29,13 @@
         .user { align-self: flex-end; background: #dcf8c6; border-top-right-radius: 2px; }
         .bot { align-self: flex-start; background: white; border-top-left-radius: 2px; }
         
-        /* Barra de Digitação */
+        /* Estilo do Aviso de Segurança */
+        .disclaimer { 
+            background: #fff3cd; color: #856404; border: 1px solid #ffeeba;
+            padding: 10px; border-radius: 8px; font-size: 12px; text-align: center;
+            margin-bottom: 10px; font-weight: bold;
+        }
+
         #footer-input { 
             padding: 8px 10px; background: #f0f0f0; 
             display: flex; align-items: center; gap: 8px;
@@ -62,13 +66,16 @@
 </header>
 
 <div id="chat-window">
-    <div class="msg bot">Olá! Sou o Dr. Saúde. Como posso ajudar agora?</div>
+    <div class="disclaimer">
+        ⚠️ ATENÇÃO: Este assistente de IA não substitui um médico. Em caso de sintomas graves ou emergência, procure o hospital mais próximo imediatamente.
+    </div>
+    <div class="msg bot">Olá! Sou o Dr. Saúde. Como posso ajudar com a sua triagem hoje?</div>
 </div>
 <div id="typing" class="typing">Doutor está a analisar...</div>
 
 <div id="footer-input">
     <div class="input-wrapper">
-        <input type="text" id="userInput" placeholder="Escreva a sua mensagem..." autocomplete="off">
+        <input type="text" id="userInput" placeholder="Mensagem" autocomplete="off">
     </div>
     <button id="sendBtn" onclick="sendMsg()">
         <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
@@ -76,11 +83,10 @@
 </div>
 
 <script>
-    // MEMÓRIA E DIRETRIZES DE COMPORTAMENTO DIRETO
     let conversaHistorico = [
         {
             role: "system", 
-            content: "Você é o Dr. Saúde na Mão-MZ. Seja direto, breve e objetivo. Não dê respostas longas ou enroladas. Se o usuário disser um sintoma, faça perguntas curtas para a triagem. Fale de forma natural, como um chat rápido de Moçambique. Evite pedidos de desculpas desnecessários."
+            content: "Você é o Dr. Saúde na Mão-MZ. Diretrizes: 1. Seja direto e objetivo. 2. SEMPRE reforce que você não substitui um médico. 3. Se detectar sintomas graves (dor no peito forte, falta de ar, perda de consciência, febre muito alta em bebês), ordene que o usuário procure um hospital imediatamente. 4. Use português de Moçambique."
         }
     ];
 
@@ -93,7 +99,6 @@
         
         if(!val) return;
 
-        // Interface do Usuário
         win.innerHTML += `<div class="msg user">${val}</div>`;
         conversaHistorico.push({role: "user", content: val});
         
@@ -112,7 +117,7 @@
                 body: JSON.stringify({
                     model: "llama-3.1-8b-instant",
                     messages: conversaHistorico,
-                    temperature: 0.5, // Menos "criativo" e mais focado
+                    temperature: 0.4,
                     stream: false
                 })
             });
@@ -124,7 +129,7 @@
             win.innerHTML += `<div class="msg bot">${respostaIA.replace(/\n/g, '<br>')}</div>`;
             
         } catch(e) {
-            win.innerHTML += `<div class="msg bot" style="color:red">Falha na conexão. Tente novamente.</div>`;
+            win.innerHTML += `<div class="msg bot" style="color:red">Erro de conexão. Tente novamente.</div>`;
         } finally {
             typing.style.display = 'none';
             btn.disabled = false;
