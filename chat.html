@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Saúde na Mão-MZ | Chat Profissional</title>
+    <title>Saúde na Mão-MZ | Chat Direto</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; background: #e5ddd5; height: 100vh; display: flex; flex-direction: column; }
         
+        /* Cabeçalho WhatsApp */
         header { 
             background: #075e54; color: white; padding: 10px 16px; 
             display: flex; align-items: center; gap: 12px;
@@ -18,6 +19,7 @@
         .header-info h2 { font-size: 16px; margin: 0; }
         .header-info span { font-size: 11px; opacity: 0.9; }
 
+        /* Área de Chat */
         #chat-window { 
             flex: 1; overflow-y: auto; padding: 15px; 
             display: flex; flex-direction: column; gap: 10px;
@@ -29,6 +31,7 @@
         .user { align-self: flex-end; background: #dcf8c6; border-top-right-radius: 2px; }
         .bot { align-self: flex-start; background: white; border-top-left-radius: 2px; }
         
+        /* Barra de Digitação */
         #footer-input { 
             padding: 8px 10px; background: #f0f0f0; 
             display: flex; align-items: center; gap: 8px;
@@ -59,13 +62,13 @@
 </header>
 
 <div id="chat-window">
-    <div class="msg bot">Olá! Sou o assistente da Saúde na Mão-MZ. Como posso ajudar com a sua saúde hoje?</div>
+    <div class="msg bot">Olá! Sou o Dr. Saúde. Como posso ajudar agora?</div>
 </div>
-<div id="typing" class="typing">Doutor está a escrever...</div>
+<div id="typing" class="typing">Doutor está a analisar...</div>
 
 <div id="footer-input">
     <div class="input-wrapper">
-        <input type="text" id="userInput" placeholder="Mensagem" autocomplete="off">
+        <input type="text" id="userInput" placeholder="Escreva a sua mensagem..." autocomplete="off">
     </div>
     <button id="sendBtn" onclick="sendMsg()">
         <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
@@ -73,9 +76,12 @@
 </div>
 
 <script>
-    // MEMÓRIA DA CONVERSA
+    // MEMÓRIA E DIRETRIZES DE COMPORTAMENTO DIRETO
     let conversaHistorico = [
-        {role: "system", content: "Você é o Dr. Saúde na Mão-MZ, assistente de triagem em Moçambique. Seja empático e mantenha sempre o contexto. Se o usuário falar uma idade ou sintoma, continue a triagem a partir daí, nunca reinicie a conversa do zero."}
+        {
+            role: "system", 
+            content: "Você é o Dr. Saúde na Mão-MZ. Seja direto, breve e objetivo. Não dê respostas longas ou enroladas. Se o usuário disser um sintoma, faça perguntas curtas para a triagem. Fale de forma natural, como um chat rápido de Moçambique. Evite pedidos de desculpas desnecessários."
+        }
     ];
 
     async function sendMsg() {
@@ -87,7 +93,7 @@
         
         if(!val) return;
 
-        // Adiciona mensagem do usuário ao chat e à memória
+        // Interface do Usuário
         win.innerHTML += `<div class="msg user">${val}</div>`;
         conversaHistorico.push({role: "user", content: val});
         
@@ -105,7 +111,8 @@
                 },
                 body: JSON.stringify({
                     model: "llama-3.1-8b-instant",
-                    messages: conversaHistorico, // Envia o histórico completo
+                    messages: conversaHistorico,
+                    temperature: 0.5, // Menos "criativo" e mais focado
                     stream: false
                 })
             });
@@ -113,12 +120,11 @@
             const data = await res.json();
             const respostaIA = data.choices[0].message.content;
             
-            // Adiciona resposta da IA à memória
             conversaHistorico.push({role: "assistant", content: respostaIA});
-            
             win.innerHTML += `<div class="msg bot">${respostaIA.replace(/\n/g, '<br>')}</div>`;
+            
         } catch(e) {
-            win.innerHTML += `<div class="msg bot" style="color:red">Erro de conexão. Verifique a internet.</div>`;
+            win.innerHTML += `<div class="msg bot" style="color:red">Falha na conexão. Tente novamente.</div>`;
         } finally {
             typing.style.display = 'none';
             btn.disabled = false;
