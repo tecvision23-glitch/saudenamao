@@ -2,19 +2,19 @@
 <html lang="pt-MZ">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Saúde na Mão-MZ | Chat Corrigido</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Saúde na Mão-MZ</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        /* CORREÇÃO DO TAMANHO NA TELA DO TELEMÓVEL */
-        html, body { height: 100%; min-height: -webkit-fill-available; background: #e5ddd5; }
-        body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; display: flex; flex-direction: column; overflow: hidden; }
+        /* CORREÇÃO CRÍTICA DE ALTURA PARA REDES SOCIAIS */
+        html, body { height: 100vh; height: -webkit-fill-available; background: #e5ddd5; overflow: hidden; }
+        body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; display: flex; flex-direction: column; position: fixed; width: 100%; top: 0; left: 0; right: 0; bottom: 0; }
         
         header { 
-            background: #075e54; color: white; padding: 10px 16px; 
+            background: #075e54; color: white; padding: 12px 16px; 
             display: flex; align-items: center; gap: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 30; flex-shrink: 0;
         }
         .header-img { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #fff; background: #fff; }
         .header-info { flex: 1; }
@@ -23,36 +23,44 @@
 
         #chat-window { 
             flex: 1; overflow-y: auto; padding: 15px; 
-            display: flex; flex-direction: column; gap: 10px;
+            display: flex; flex-direction: column; gap: 12px;
             background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
             background-color: #e5ddd5;
             -webkit-overflow-scrolling: touch;
+            padding-bottom: 20px;
         }
         
-        .msg { padding: 8px 12px; border-radius: 8px; max-width: 85%; font-size: 15px; line-height: 1.4; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); word-wrap: break-word; }
+        .msg { padding: 10px 14px; border-radius: 8px; max-width: 85%; font-size: 15px; line-height: 1.5; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); word-wrap: break-word; }
         .user { align-self: flex-end; background: #dcf8c6; border-top-right-radius: 2px; }
-        .bot { align-self: flex-start; background: white; border-top-left-radius: 2px; }
+        .bot { align-self: flex-start; background: white; border-top-left-radius: 2px; color: #333; }
         
+        /* Formatação de tópicos dentro do balão do bot */
+        .bot ul { margin-left: 20px; padding-top: 5px; padding-bottom: 5px; }
+        .bot li { margin-bottom: 4px; }
+        .bot strong { color: #000; }
+
         .disclaimer { 
             background: #fff3cd; color: #856404; border: 1px solid #ffeeba;
-            padding: 8px; border-radius: 8px; font-size: 11px; text-align: center;
-            margin-bottom: 5px; font-weight: bold;
+            padding: 10px; border-radius: 8px; font-size: 11px; text-align: center;
+            margin-bottom: 5px; font-weight: bold; flex-shrink: 0;
         }
 
-        /* BARRA DE DIGITAÇÃO CORRIGIDA PARA FICAR SEMPRE VISÍVEL */
+        /* FIXAÇÃO ABSOLUTA DA BARRA PARA NÃO SUMIR ATRÁS DO TECLADO */
         #footer-input { 
-            padding: 8px 10px; background: #f0f0f0; 
+            padding: 10px; background: #f0f0f0; 
             display: flex; align-items: center; gap: 8px;
-            position: relative; z-index: 20;
+            border-top: 1px solid #ddd; z-index: 40; flex-shrink: 0;
+            margin-bottom: env(safe-area-inset-bottom);
         }
         .input-wrapper { 
-            flex: 1; background: white; border-radius: 25px; 
+            flex: 1; background: white; border-radius: 22px; 
             padding: 2px 15px; display: flex; align-items: center;
+            border: 1px solid #ccc;
         }
         input { width: 100%; border: none; padding: 10px 0; outline: none; font-size: 16px; background: transparent; }
         button { 
             background: #128c7e; color: white; border: none; 
-            border-radius: 50%; width: 44px; height: 44px; 
+            border-radius: 50%; width: 45px; height: 45px; 
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; flex-shrink: 0;
         }
@@ -72,15 +80,15 @@
 
 <div id="chat-window">
     <div class="disclaimer">
-        ⚠️ O sistema não substitui o hospital. Em casos graves, procure um médico imediatamente.
+        ⚠️ Atenção: Este sistema é uma IA de triagem informativa e não substitui uma consulta médica real ou hospitalar.
     </div>
-    <div class="msg bot">Olá! Sou o Dr. Saúde. Qual é o sintoma que está a sentir agora?</div>
+    <div class="msg bot">Olá! Sou o Dr. Saúde. Como posso ajudar com a sua triagem médica hoje? Pode descrever o que está a sentir.</div>
 </div>
 <div id="typing" class="typing">Doutor está a analisar...</div>
 
 <div id="footer-input">
     <div class="input-wrapper">
-        <input type="text" id="userInput" placeholder="Escreva a mensagem aqui..." autocomplete="off">
+        <input type="text" id="userInput" placeholder="Escreva a sua mensagem..." autocomplete="off">
     </div>
     <button id="sendBtn" onclick="sendMsg()">
         <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
@@ -88,11 +96,11 @@
 </div>
 
 <script>
-    // REGRAS ULTRA DIRETAS PARA ELIMINAR TEXTOS LONGOS
+    // INSTRUÇÃO MODIFICADA PARA IMITAR O ESTILO ACESSÍVEL E ORGANIZADO DO GEMINI
     let conversaHistorico = [
         {
             role: "system", 
-            content: "Você é o Dr. Saúde na Mão-MZ, um assistente prático. Suas respostas devem ter no máximo 3 ou 4 linhas. Seja muito direto. Se o usuário disser um sintoma (como dor de barriga), cite apenas 2 ou 3 causas comuns muito simples e diga: 'Se a dor for muito forte, vá ao hospital'. Nunca escreva textos longos ou listas gigantes. Use o português de Moçambique."
+            content: "Você é o Dr. Saúde na Mão-MZ. Responda exatamente como uma IA de saúde moderna e acolhedora. Quando o usuário disser um sintoma: 1. Valide o sintoma com empatia. 2. Apresente as Possíveis Causas organizadas em tópicos (usando hífens ou listas HTML se achar melhor) de forma clara, explicando brevemente causas simples primeiro (como gases ou má digestão) e depois causas sérias. 3. Finalize SEMPRE criando uma seção chamada '🚨 Sinais de Alerta: Quando Ir ao Hospital' listando os sintomas graves em tópicos. Use português de Moçambique, seja didático, organizado e evite textos corridos e secos."
         }
     ];
 
@@ -105,14 +113,13 @@
         
         if(!val) return;
 
+        // Adiciona a mensagem do usuário
         win.innerHTML += `<div class="msg user">${val}</div>`;
         conversaHistorico.push({role: "user", content: val});
         
         input.value = '';
         typing.style.display = 'block';
-        
-        // Correção de rolagem automática para telemóveis
-        setTimeout(() => { win.scrollTop = win.scrollHeight; }, 50);
+        win.scrollTop = win.scrollHeight;
         btn.disabled = true;
 
         try {
@@ -125,24 +132,30 @@
                 body: JSON.stringify({
                     model: "llama-3.1-8b-instant",
                     messages: conversaHistorico,
-                    temperature: 0.3, // Deixa a resposta ainda mais firme e menos repetitiva
-                    max_tokens: 150,  // Corta fisicamente qualquer tentativa de texto longo
+                    temperature: 0.6, // Sobe um pouco a temperatura para a IA explicar melhor em vez de ser robótica
+                    max_tokens: 600,  // Dá espaço para ela organizar os tópicos bonitos
                     stream: false
                 })
             });
             
             const data = await res.json();
-            const respostaIA = data.choices[0].message.content;
+            let respostaIA = data.choices[0].message.content;
             
             conversaHistorico.push({role: "assistant", content: respostaIA});
-            win.innerHTML += `<div class="msg bot">${respostaIA.replace(/\n/g, '<br>')}</div>`;
+            
+            // Converte quebras de linha e formata negritos simples para exibição correta no HTML
+            respostaIA = respostaIA.replace(/\n/g, '<br>');
+            respostaIA = respostaIA.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            win.innerHTML += `<div class="msg bot">${respostaIA}</div>`;
             
         } catch(e) {
-            win.innerHTML += `<div class="msg bot" style="color:red">Erro de ligação.</div>`;
+            win.innerHTML += `<div class="msg bot" style="color:red">Erro ao processar. Tente novamente em instantes.</div>`;
         } finally {
             typing.style.display = 'none';
             btn.disabled = false;
-            setTimeout(() => { win.scrollTop = win.scrollHeight; }, 50);
+            // Garante que o scroll desce completamente após a resposta renderizar
+            setTimeout(() => { win.scrollTop = win.scrollHeight; }, 100);
         }
     }
 
@@ -150,9 +163,20 @@
         if (e.key === 'Enter') sendMsg();
     });
 
-    // Ajuste dinâmico quando o teclado abre no telemóvel
-    window.addEventListener('resize', () => {
-        document.getElementById('chat-window').scrollTop = document.getElementById('chat-window').scrollHeight;
+    // CORREÇÃO VISUAL PARA O TECLADO MOBILE (RESIZE EVENTS)
+    const tratarTeclado = () => {
+        document.body.style.height = window.innerHeight + 'px';
+        window.scrollTo(0, 0);
+        const win = document.getElementById('chat-window');
+        win.scrollTop = win.scrollHeight;
+    };
+
+    window.addEventListener('resize', tratarTeclado);
+    window.addEventListener('orientationchange', tratarTeclado);
+    
+    // Forçar foco correto ao clicar no input em navegadores embutidos (como o do Facebook)
+    document.getElementById('userInput').addEventListener('focus', () => {
+        setTimeout(tratarTeclado, 300);
     });
 </script>
 
