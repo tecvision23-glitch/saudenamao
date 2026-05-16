@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Saúde na Mão-MZ | Chat Seguro</title>
+    <title>Saúde na Mão-MZ | Chat Corrigido</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; background: #e5ddd5; height: 100vh; display: flex; flex-direction: column; }
+        
+        /* CORREÇÃO DO TAMANHO NA TELA DO TELEMÓVEL */
+        html, body { height: 100%; min-height: -webkit-fill-available; background: #e5ddd5; }
+        body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; display: flex; flex-direction: column; overflow: hidden; }
         
         header { 
             background: #075e54; color: white; padding: 10px 16px; 
@@ -23,35 +26,37 @@
             display: flex; flex-direction: column; gap: 10px;
             background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
             background-color: #e5ddd5;
+            -webkit-overflow-scrolling: touch;
         }
         
-        .msg { padding: 8px 12px; border-radius: 8px; max-width: 85%; font-size: 15px; line-height: 1.4; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
+        .msg { padding: 8px 12px; border-radius: 8px; max-width: 85%; font-size: 15px; line-height: 1.4; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); word-wrap: break-word; }
         .user { align-self: flex-end; background: #dcf8c6; border-top-right-radius: 2px; }
         .bot { align-self: flex-start; background: white; border-top-left-radius: 2px; }
         
-        /* Estilo do Aviso de Segurança */
         .disclaimer { 
             background: #fff3cd; color: #856404; border: 1px solid #ffeeba;
-            padding: 10px; border-radius: 8px; font-size: 12px; text-align: center;
-            margin-bottom: 10px; font-weight: bold;
+            padding: 8px; border-radius: 8px; font-size: 11px; text-align: center;
+            margin-bottom: 5px; font-weight: bold;
         }
 
+        /* BARRA DE DIGITAÇÃO CORRIGIDA PARA FICAR SEMPRE VISÍVEL */
         #footer-input { 
             padding: 8px 10px; background: #f0f0f0; 
             display: flex; align-items: center; gap: 8px;
+            position: relative; z-index: 20;
         }
         .input-wrapper { 
             flex: 1; background: white; border-radius: 25px; 
-            padding: 5px 15px; display: flex; align-items: center;
+            padding: 2px 15px; display: flex; align-items: center;
         }
-        input { width: 100%; border: none; padding: 10px 0; outline: none; font-size: 16px; }
+        input { width: 100%; border: none; padding: 10px 0; outline: none; font-size: 16px; background: transparent; }
         button { 
             background: #128c7e; color: white; border: none; 
-            border-radius: 50%; width: 48px; height: 48px; 
+            border-radius: 50%; width: 44px; height: 44px; 
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; flex-shrink: 0;
         }
-        button svg { width: 24px; height: 24px; fill: white; }
+        button svg { width: 22px; height: 22px; fill: white; }
         .typing { font-size: 12px; color: #666; padding: 5px 15px; background: #e5ddd5; display: none; }
     </style>
 </head>
@@ -67,15 +72,15 @@
 
 <div id="chat-window">
     <div class="disclaimer">
-        ⚠️ ATENÇÃO: Este assistente de IA não substitui um médico. Em caso de sintomas graves ou emergência, procure o hospital mais próximo imediatamente.
+        ⚠️ O sistema não substitui o hospital. Em casos graves, procure um médico imediatamente.
     </div>
-    <div class="msg bot">Olá! Sou o Dr. Saúde. Como posso ajudar com a sua triagem hoje?</div>
+    <div class="msg bot">Olá! Sou o Dr. Saúde. Qual é o sintoma que está a sentir agora?</div>
 </div>
 <div id="typing" class="typing">Doutor está a analisar...</div>
 
 <div id="footer-input">
     <div class="input-wrapper">
-        <input type="text" id="userInput" placeholder="Mensagem" autocomplete="off">
+        <input type="text" id="userInput" placeholder="Escreva a mensagem aqui..." autocomplete="off">
     </div>
     <button id="sendBtn" onclick="sendMsg()">
         <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
@@ -83,10 +88,11 @@
 </div>
 
 <script>
+    // REGRAS ULTRA DIRETAS PARA ELIMINAR TEXTOS LONGOS
     let conversaHistorico = [
         {
             role: "system", 
-            content: "Você é o Dr. Saúde na Mão-MZ. Diretrizes: 1. Seja direto e objetivo. 2. SEMPRE reforce que você não substitui um médico. 3. Se detectar sintomas graves (dor no peito forte, falta de ar, perda de consciência, febre muito alta em bebês), ordene que o usuário procure um hospital imediatamente. 4. Use português de Moçambique."
+            content: "Você é o Dr. Saúde na Mão-MZ, um assistente prático. Suas respostas devem ter no máximo 3 ou 4 linhas. Seja muito direto. Se o usuário disser um sintoma (como dor de barriga), cite apenas 2 ou 3 causas comuns muito simples e diga: 'Se a dor for muito forte, vá ao hospital'. Nunca escreva textos longos ou listas gigantes. Use o português de Moçambique."
         }
     ];
 
@@ -104,7 +110,9 @@
         
         input.value = '';
         typing.style.display = 'block';
-        win.scrollTop = win.scrollHeight;
+        
+        // Correção de rolagem automática para telemóveis
+        setTimeout(() => { win.scrollTop = win.scrollHeight; }, 50);
         btn.disabled = true;
 
         try {
@@ -117,7 +125,8 @@
                 body: JSON.stringify({
                     model: "llama-3.1-8b-instant",
                     messages: conversaHistorico,
-                    temperature: 0.4,
+                    temperature: 0.3, // Deixa a resposta ainda mais firme e menos repetitiva
+                    max_tokens: 150,  // Corta fisicamente qualquer tentativa de texto longo
                     stream: false
                 })
             });
@@ -129,16 +138,21 @@
             win.innerHTML += `<div class="msg bot">${respostaIA.replace(/\n/g, '<br>')}</div>`;
             
         } catch(e) {
-            win.innerHTML += `<div class="msg bot" style="color:red">Erro de conexão. Tente novamente.</div>`;
+            win.innerHTML += `<div class="msg bot" style="color:red">Erro de ligação.</div>`;
         } finally {
             typing.style.display = 'none';
             btn.disabled = false;
-            win.scrollTop = win.scrollHeight;
+            setTimeout(() => { win.scrollTop = win.scrollHeight; }, 50);
         }
     }
 
     document.getElementById('userInput').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') sendMsg();
+    });
+
+    // Ajuste dinâmico quando o teclado abre no telemóvel
+    window.addEventListener('resize', () => {
+        document.getElementById('chat-window').scrollTop = document.getElementById('chat-window').scrollHeight;
     });
 </script>
 
