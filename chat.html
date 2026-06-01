@@ -35,7 +35,7 @@
         .bot { align-self: flex-start; background: white; border-top-left-radius: 2px; color: #333; }
         
         /* Formatação de tópicos dentro do balão do bot */
-        .bot ul { margin-left: 20px; padding-top: 5px; padding-bottom: 5px; }
+        .bot ul, .bot ol { margin-left: 20px; padding-top: 5px; padding-bottom: 5px; }
         .bot li { margin-bottom: 4px; }
         .bot strong { color: #000; }
 
@@ -82,7 +82,7 @@
     <div class="disclaimer">
         ⚠️ Atenção: Este sistema é uma IA de triagem informativa e não substitui uma consulta médica real ou hospitalar.
     </div>
-    <div class="msg bot">Olá! Sou o Dr. Saúde. Como posso ajudar com a sua triagem médica hoje? Pode descrever o que está a sentir.</div>
+    <div class="msg bot">Olá! Sou o Dr. Saúde. Como posso ajudar com a sua triagem médica ou orientação de nutrição hoje? Pode descrever o que está a sentir ou a sua dúvida.</div>
 </div>
 <div id="typing" class="typing">Doutor está a analisar...</div>
 
@@ -96,15 +96,19 @@
 </div>
 
 <script>
-    let conversaHistorico = [
-        {
-           // PROMPT ATUALIZADO: Focado em empatia profissional sem drama
+    // SISTEMA CONFIGURADO COM REGRAS DE SAÚDE, NUTRIÇÃO LOCAL E RECUSA DE OUTROS TEMAS
     let conversaHistorico = [
         {
             role: "system", 
-            content: "Você é o Dr. Saúde na Mão-MZ, um assistente de triagem médica moderno, calmo, acolhedor e profissional. Nunca use expressões exageradas ou excessivamente dramáticas como 'Oh não', 'Que terrível' ou 'Sinto muito'. Em vez disso, valide o sintoma de forma direta, tranquila e humana (ex: 'Compreendo a sua preocupação com a febre do seu filho, vamos analisar isso juntos.'). Quando o usuário disser um sintoma: 1. Valide com empatia profissional e calma. 2. Apresente as Possíveis Causas organizadas em tópicos claros (usando hífens ou listas), explicando causas simples primeiro e depois causas sérias. 3. Finalize SEMPRE criando uma seção chamada '🚨 Sinais de Alerta: Quando Ir ao Hospital' listando os sintomas graves em tópicos. Use português de Moçambique, seja didático, muito organizado e evite blocos longos de texto corrido."
+            content: "Você é o Dr. Saúde na Mão-MZ, um assistente virtual de triagem médica e orientação nutricional focado na realidade de Moçambique. \n\n" +
+                     "REGRA CRÍTICA 1 (ESCOPO): Você APENAS trata de assuntos de saúde, bem-estar, sintomas e nutrição. Se o usuário fizer perguntas sobre outros temas (tecnologia, fofocas, matemática, política, etc.), recuse educadamente dizendo que o seu propósito é focado exclusivamente na saúde e bem-estar dos moçambicanos.\n\n" +
+                     "REGRA CRÍTICA 2 (TOM): Seja calmo, acolhedor, humano e extremamente profissional. NUNCA use termos exagerados ou dramáticos como 'Oh não', 'Que terrível' ou 'Sinto muito'. Valide a dor ou preocupação com seriedade e tranquilidade.\n\n" +
+                     "REGRA CRÍTICA 3 (NUTRIÇÃO): Se o usuário perguntar sobre dietas ou tiver condições como Diabetes, Gastrite ou Hipertensão, atue como um Nutricionista Prático. Ofereça orientações claras adaptadas a Moçambique. Sugira substitutos alimentares locais usando o que se encontra no mercado, na banca ou na machamba (ex: mapira, mexoeira, batata-doce, cacana, couve, mandioca cozida). Explique o que evitar de forma didática.\n\n" +
+                     "REGRA CRÍTICA 4 (ESTRUTURA DE SINTOMAS): Quando o usuário relatar sintomas físicos de doença:\n" +
+                     "1. Valide o sintoma de forma profissional.\n" +
+                     "2. Apresente as Possíveis Causas organizadas em tópicos claros (com hífens), explicando causas simples primeiro e depois condições sérias.\n" +
+                     "3. Finalize OBRIGATORIAMENTE com uma seção destacada chamada '🚨 Sinais de Alerta: Quando Ir ao Hospital' listando os critérios de gravidade em tópicos."
         }
-    ];
     ];
 
     async function sendMsg() {
@@ -116,7 +120,7 @@
         
         if(!val) return;
 
-        // Adiciona a mensagem do usuário
+        // Adiciona a mensagem do usuário no ecrã
         win.innerHTML += `<div class="msg user">${val}</div>`;
         conversaHistorico.push({role: "user", content: val});
         
@@ -126,7 +130,7 @@
         btn.disabled = true;
 
         try {
-            // ALTERAÇÃO SEGURA: Agora chamamos a nossa própria rota serverless da Vercel
+            // Chamada segura direcionada para a tua API interna na Vercel
             const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: {
@@ -138,22 +142,27 @@
             });
             
             const data = await res.json();
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
             let respostaIA = data.choices[0].message.content;
             
             conversaHistorico.push({role: "assistant", content: respostaIA});
             
-            // Converte quebras de linha e formata negritos simples para exibição correta no HTML
+            // Formatação visual da resposta da IA para exibir corretamente quebras de linha e negritos
             respostaIA = respostaIA.replace(/\n/g, '<br>');
             respostaIA = respostaIA.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             
             win.innerHTML += `<div class="msg bot">${respostaIA}</div>`;
             
         } catch(e) {
+            console.error(e);
             win.innerHTML += `<div class="msg bot" style="color:red">Erro ao processar. Tente novamente em instantes.</div>`;
         } finally {
             typing.style.display = 'none';
             btn.disabled = false;
-            // Garante que o scroll desce completamente após a resposta renderizar
             setTimeout(() => { win.scrollTop = win.scrollHeight; }, 100);
         }
     }
@@ -162,7 +171,6 @@
         if (e.key === 'Enter') sendMsg();
     });
 
-    // CORREÇÃO VISUAL PARA O TECLADO MOBILE (RESIZE EVENTS)
     const tratarTeclado = () => {
         document.body.style.height = window.innerHeight + 'px';
         window.scrollTo(0, 0);
@@ -173,7 +181,6 @@
     window.addEventListener('resize', tratarTeclado);
     window.addEventListener('orientationchange', tratarTeclado);
     
-    // Forçar foco correto ao clicar no input em navegadores embutidos (como o do Facebook)
     document.getElementById('userInput').addEventListener('focus', () => {
         setTimeout(tratarTeclado, 300);
     });
