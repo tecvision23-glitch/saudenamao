@@ -96,11 +96,10 @@
 </div>
 
 <script>
-    // INSTRUÇÃO MODIFICADA PARA IMITAR O ESTILO ACESSÍVEL E ORGANIZADO DO GEMINI
     let conversaHistorico = [
         {
             role: "system", 
-            content: "Você é o Dr. Saúde na Mão-MZ. Responda exatamente como uma IA de saúde moderna e acolhedora. Quando o usuário disser um sintoma: 1. Valide o sintoma com empatia. 2. Apresente as Possíveis Causas organizadas em tópicos (usando hífens ou listas HTML se achar melhor) de forma clara, explicando brevemente causas simples primeiro (como gases ou má digestão) e depois causas sérias. 3. Finalize SEMPRE criando uma seção chamada '🚨 Sinais de Alerta: Quando Ir ao Hospital' listando os sintomas graves em tópicos. Use português de Moçambique, seja didático, organizado e evite textos corridos e secos."
+            content: "Você é o Dr. Saúde na Mão-MZ. Responda exatamente como uma IA de saúde moderna e acolhedora. Quando o usuário disser um sintoma: 1. Valide o sintoma com empatia. 2. Apresente as Possíveis Causas organizadas em tópicos (usando hífens ou listas HTML se achar melhor) de forma clara, explaining brevemente causas simples primeiro (como gases ou má digestão) e depois causas sérias. 3. Finalize SEMPRE criando uma seção chamada '🚨 Sinais de Alerta: Quando Ir ao Hospital' listando os sintomas graves em tópicos. Use português de Moçambique, seja didático, organizado e evite textos corridos e secos."
         }
     ];
 
@@ -123,18 +122,14 @@
         btn.disabled = true;
 
         try {
-            const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            // ALTERAÇÃO SEGURA: Agora chamamos a nossa própria rota serverless da Vercel
+            const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer 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',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    model: "llama-3.1-8b-instant",
-                    messages: conversaHistorico,
-                    temperature: 0.6, // Sobe um pouco a temperatura para a IA explicar melhor em vez de ser robótica
-                    max_tokens: 600,  // Dá espaço para ela organizar os tópicos bonitos
-                    stream: false
+                    messages: conversaHistorico
                 })
             });
             
